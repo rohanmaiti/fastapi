@@ -98,3 +98,25 @@ def addUserInfo(university_id: int, user: User, college_name: str = "Chitkara Un
         "university_id": university_id,
         "collegeName": college_name
     }
+
+# FastAPI allows you to declare additional information and validation for your parameters.
+# add validation max length to 50 in the q
+# @app.get('get-q')
+# def getQ(q: str | None = None):
+#     return {
+#         "Q" : q
+#     }
+
+
+@app.get("/get-q")
+def getQ(q: Annotated[ str | None , Query(max_length=50)] = None):
+    return {
+        "Q": q
+    }
+
+@app.get('/learn-query')
+def learnQuery(q: Annotated[str | None, Query(max_length=10, title="Learning Query Anotation", description="this value is a")] = None):
+    print(q)
+    return {
+        "Q" : q
+    }
