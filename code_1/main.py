@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import Annotated
 from fastapi import Query
 
+
 # creating a instance of FastAPI class to handle all http request 
 app= FastAPI()
 
