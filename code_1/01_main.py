@@ -1,14 +1,20 @@
-from fastapi import FastAPI
+# from fastapi import FastAPI
+# from fastapi import Query
+
+# or can write like this as well 
+from fastapi import FastAPI, Query
+
+# importing enum 
 from enum import Enum
-from pydantic import BaseModel
-from typing import Annotated
-from fastapi import Query
 
 
-# creating a instance of FastAPI class to handle all http request 
+
+
+
+# *creating a instance of FastAPI class to handle all http request 
 app= FastAPI()
 
-# simple get request 
+#* simple get request 
 @app.get('/home')
 def home_page():
     return "Home page"
@@ -20,11 +26,13 @@ def getItem(item_id):
     # fetch the item from DB and return it 
     return {"item": item_id}
 
-# can add type check in the above route 
+# type - 2
+# can add type check in the above route by defining type of query parameter
 @app.get('/getid/{id}')
-def getId(id: int):
+def getId(id: int): 
     return {"number_id": id}
 
+# type - 3
 # to get the path parameter as  predefined --> use Enum 
 class UserID(str, Enum):
     aadhar =  "aadhar" 
@@ -39,6 +47,7 @@ def getUserId(user_id: UserID, id_number:int):
         "id_number": id_number
     }
 
+# type - 4
 # * Path convertor
 # if you want to get a path as parameter like this 
 # /app/file/{path_of_file}
@@ -66,6 +75,7 @@ def userDetail(name: str, age: int | None = None ): # here age is optional
         "age": age
     }
 
+
 # * Query Parameter + Path variable 
 @app.get('/api/rollnumber/{id}')
 def getRollNumber(id:int, name: str | None = None ):
@@ -74,50 +84,3 @@ def getRollNumber(id:int, name: str | None = None ):
         "username": name
     }
 
-
-# * POST REQUESTS
-from pydantic import BaseModel
-class User(BaseModel):
-    id: int
-    name: str
-    age: int | None = None # this means optional
-
-@app.post('/add-user')
-def addUser(user:User):
-    return {
-        "id": user.id,
-        "name": user.name,
-        "age": user.age,
-        "university": "Chitkara University Himachal Pradesh"
-    }
-
-# POST REQUEST + query + path
-@app.post('/api/v1/{university_id}')
-def addUserInfo(university_id: int, user: User, college_name: str = "Chitkara University"):
-    return {
-        **dict(user),
-        "university_id": university_id,
-        "collegeName": college_name
-    }
-
-# FastAPI allows you to declare additional information and validation for your parameters.
-# add validation max length to 50 in the q
-# @app.get('get-q')
-# def getQ(q: str | None = None):
-#     return {
-#         "Q" : q
-#     }
-
-
-@app.get("/get-q")
-def getQ(q: Annotated[ str | None , Query(max_length=50)] = None):
-    return {
-        "Q": q
-    }
-
-@app.get('/learn-query')
-def learnQuery(q: Annotated[str | None, Query(max_length=10, title="Learning Query Anotation", description="this value is a")] = None):
-    print(q)
-    return {
-        "Q" : q
-    }
