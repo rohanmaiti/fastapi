@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from typing import Annotated
-
+from pydantic import AfterValidator
 from typing import Annotated
 
 
@@ -72,3 +72,29 @@ async def funcname(q: Annotated[str | None, Query(max_length=10, default_value='
     return {
         "Q" : q
     }
+
+# we can add custom validations as well using #* AfterValidator
+data = {
+    "isbn-9781529046137": "The Hitchhiker's Guide to the Galaxy",
+    "imdb-tt0371724": "The Hitchhiker's Guide to the Galaxy",
+    "isbn-9781439512982": "Isaac Asimov: The Complete Stories, Vol. 2",
+}
+
+class Id(BaseModel):
+    id: str | None = None
+
+def custom_check(id: Id):
+    id_str = id.id
+    if not id_str.startswith(('imdb', 'isbn')):
+        raise ValueError("Invalid Id Format")
+    return id
+
+@app.post('/custom-check')
+def custom_check(id: Annotated[Id | None, AfterValidator(custom_check)  ]=None):
+    if not id:
+        return ({"hello": "Hello user, hitting POST at /custom-check"})
+    else :
+        return ({
+            "hello": "Hello user, hitting POST at /custom-check",
+            "id": id.id
+        })
