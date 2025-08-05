@@ -5,7 +5,7 @@ from fastapi import FastAPI, Cookie
 app = FastAPI()
 
 @app.get('/getting-cookie')
-def handle_cookie(item: Annotated[str, Cookie()]):
+def handle_cookie(item: Annotated[str, Cookie()] = None):
     return {
         "cookie": item
     }
