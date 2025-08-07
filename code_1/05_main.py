@@ -13,6 +13,8 @@ def handle_cookie(item: Annotated[str, Cookie()] = None):
     }
 
 
+
+
 # # ** Header() 
 # @app.post('/get-header-content')
 # def getHeader(x_auth: Annotated[ str | None, Header() ]=None):
@@ -27,6 +29,7 @@ def getHeader(x_auth: Annotated[ list[str] | None, Header() ]=None):
     return {
         "Printing header": x_auth
     }
+
 
 
 # cookie model 
@@ -53,3 +56,5 @@ class CommonHeaders(BaseModel):
 @app.get("/items/")
 async def read_items(headers: Annotated[CommonHeaders, Header()]):
     return headers
+
+
