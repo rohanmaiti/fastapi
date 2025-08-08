@@ -96,6 +96,8 @@ then youe have to mention embaded inside body
 
 """
 
+
+
 @app.post('/learn-embed')
 def handleEmbaded(item: Annotated[Item, Body(embed=True)]):
     return {
