@@ -1,4 +1,10 @@
-# How to start the project ?
+# How to create a fastapi backend ? 
+## 1. create a virtual environment
+```
+python3 -m venv .<your-env-name>
+ex- ptyhon3 -m venv .myenv
+```
+## 2. activate your virtual env ?
  ```
   # activating virtual environment
   source  .venv/bin/activate
@@ -7,7 +13,7 @@
   fastapi dev <file-name.py>
   ```
 
-# How to install dependencies ??
+## 3. install dependencies ??
 ### example
 ```
    pip install "fastapi[standard]"

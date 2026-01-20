@@ -19,7 +19,9 @@ app= FastAPI()
 def home_page():
     return "Home page"
 
-# path parameter | (dynamic route) params
+# #* How to start this server ? --> fastapi dev <filename.py>
+
+# path parameter | (dynamic route) params ex- /item/123
 # type - 1
 @app.get('/item/{item_id}')
 def getItem(item_id):
@@ -65,7 +67,7 @@ def getFilePath(file_path):
 
 
 # * Query Parameters
-# means when the url would be like this --> http://127.0.0.1:8000/?name={}&age={}
+# means when the url would be like this --> http://127.0.0.1:8000/users?name={}&age={}
 # here name and age are called query parameter
 # to handle these kind of api 
 @app.get('/users')
@@ -77,6 +79,8 @@ def userDetail(name: str, age: int | None = None ): # here age is optional
 
 
 # * Query Parameter + Path variable 
+# can handle this -> http://127.0.0.1:8000/api/rollnumber/123?name=John or 
+# http://127.0.0.1:8000/api/rollnumber/123
 @app.get('/api/rollnumber/{id}')
 def getRollNumber(id:int, name: str | None = None ):
     return {
