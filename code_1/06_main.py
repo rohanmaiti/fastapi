@@ -81,7 +81,7 @@ class Response(BaseModel):
 @app.post(
     '/post-route', response_model=Response
 )
-async def handlePost(data: [Annotated[Request, Body()]] = None) -> any:
+async def handlePost(data: Annotated[Request, Body()] = None) -> any:
     return {
         "username": data.username,
         "email": data.email,
