@@ -23,6 +23,7 @@ def addUser(user:User):
     }
 
 # POST REQUEST + query + path
+# to handle this kind of end point /api/v1/12345?college_name=chitkara 
 @app.post('/api/v1/{university_id}')
 def addUserInfo(university_id: int, user: User, college_name: str = "Chitkara University"):
     return {
