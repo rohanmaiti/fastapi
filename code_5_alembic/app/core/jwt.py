@@ -4,8 +4,10 @@ from jose import jwt
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_access_token(data: dict):
-    to_encode = data.copy()
+def create_access_token(user_id: str):
+    to_encode = {
+        "sub": str(user_id)
+    }
     expire = datetime.utcnow() + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )

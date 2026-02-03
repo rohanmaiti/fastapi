@@ -1,10 +1,11 @@
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import JSONResponse
 from .request import SingupModel, LoginModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.dependency import get_db
+from app.db.dependency import get_session
 from app.api.user.v1.services.auth import does_user_exists, insert_user_in_db, handle_login
+from app.core.dependency import get_current_user
 
 
 router = APIRouter(prefix="/v1/user", tags=["Users"])
@@ -23,7 +24,7 @@ def root_router():
  
 
 @router.post("/signup")
-async def signup(data: SingupModel, session: AsyncSession=Depends(get_db)):
+async def signup(data: SingupModel, session: AsyncSession=Depends(get_session)):
     if (await does_user_exists(data, session)):
         return JSONResponse(
             status_code=400,
@@ -35,8 +36,21 @@ async def signup(data: SingupModel, session: AsyncSession=Depends(get_db)):
 
 
 @router.post("/login")
-async def login(data: LoginModel, session: AsyncSession = Depends(get_db)):
-    handle_login(data, session)
+async def login(data: LoginModel, session: AsyncSession = Depends(get_session), response: Response = None):
+    return await handle_login(data, session, response)
 
 
     
+@router.get('/private')
+async def private_route_test(current_user = Depends(get_current_user)):
+    return {
+        "message": "You have access"
+    }
+
+@router.get("/public")
+async def public_route_test(req: Request):
+    print("request", req)
+    print("request header", req.headers)
+    return {
+        "messsage": "Public route access"
+    }

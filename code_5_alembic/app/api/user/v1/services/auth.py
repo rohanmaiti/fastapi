@@ -41,29 +41,29 @@ async def insert_user_in_db(data: SingupModel, session: AsyncSession):
     })
 
 
-async def handle_login(data: LoginModel, response: Response, session: AsyncSession):
+async def handle_login(data: LoginModel, session: AsyncSession, response: Response):
     # check if email id exists 
     check_user_exists_query = select(Users).where(Users.email == data.email)
     result = await session.execute(check_user_exists_query)
-    user = result.scalar_one_or_none
-
+    user = result.scalar_one_or_none()
+    print ('user', user)
     if not user: 
          raise HTTPException(status_code=401, detail="invalid credentials")
     
     if not verify_password(data.password, user.password):
         raise HTTPException(status_code=400, detail="wrong credential")
-    
-    token_data = {
-        "sub": str(user.id)
-    }
 
-    access_token = create_access_token(token_data)
+    access_token = create_access_token(user.id)
+
     response.set_cookie(
-        key="access_token",
+        key="jwt_token",
         value=access_token,
         httponly=True,
         secure=True,      # HTTPS only
         samesite="lax"    # CSRF protection
     )
 
-    return {"message": "Login successful"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
