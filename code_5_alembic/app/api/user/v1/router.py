@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.dependency import get_session
 from app.api.user.v1.services.auth import does_user_exists, insert_user_in_db, handle_login
 from app.core.dependency import get_current_user
+import logging
 
 
 router = APIRouter(prefix="/v1/user", tags=["Users"])
@@ -53,4 +54,18 @@ async def public_route_test(req: Request):
     print("request header", req.headers)
     return {
         "messsage": "Public route access"
+    }
+
+
+
+@router.post("/public")
+async def public_route_test(req: Request):
+    print("request", req.model_dumb())
+    body = await req.body()
+    query_params = req.query_params
+    logging.info("req", req)
+
+    return {
+        "messsage": "Public route",
+        "request object": req
     }
