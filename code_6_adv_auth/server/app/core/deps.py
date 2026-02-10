@@ -16,13 +16,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 def get_token(request: Request, token = Depends(oauth2_scheme), session = Depends(get_session)):
     if token:
         return token
-    
-    cookie_token = request.cookies.get('jwt_token')
 
+    cookie_token = request.cookies.get('access_token')
     if cookie_token:
         return cookie_token
-    
+
     raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def get_refresh_token(request: Request):
+    return request.cookies.get('refresh_token')
 
 
 could_not_validate_exception = HTTPException(
@@ -49,7 +52,14 @@ async def get_current_user(
         if user is None:
             raise could_not_validate_exception
         
-        return user
+        return {
+            "data": {
+            "name": user['first_name'],
+            "email": user["email"]
+            },
+            "status": "200",
+            "message":"login successfull"
+        }
     
     except JWTError: 
         raise could_not_validate_exception
