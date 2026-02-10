@@ -1,25 +1,21 @@
 from datetime import datetime, timedelta
-from jose import jwt 
-
+from jose import jwt
+import uuid
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
-def create_jwt_token(user_id: str):
+
+def create_access_token(user_id: str):
     to_encode = {
         "sub": str(user_id)
     }
-
     expire = datetime.utcnow() + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
-
-    to_encode.update({"exp", expire})
-
+    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode,
         SECRET_KEY,
         algorithm=ALGORITHM
-    )  
+    )
 
     return encoded_jwt
-
-
