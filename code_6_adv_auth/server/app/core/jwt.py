@@ -1,5 +1,5 @@
 from fastapi import Response
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 import uuid
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
@@ -10,7 +10,7 @@ def create_access_token(user_id: str):
     to_encode = {
         "sub": str(user_id)
     }
-    expire = datetime.utcnow() + timedelta(
+    expire = datetime.now(timezone.utc) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
@@ -33,7 +33,7 @@ def create_refresh_token(user_id: str):
         "sub": str(user_id)
     }
 
-    expire = datetime.utcnow() + timedelta(
+    expire = datetime.now(timezone.utc) + timedelta(
         minutes=REFRESH_TOKEN_EXPIRE_MINUTES
     )
     jti = str(uuid.uuid4())
@@ -71,7 +71,14 @@ async def handle_refresh(response: Response, refresh_token: str):
     new_access = create_access_token(user_id)
     new_refresh = create_refresh_token(user_id)
 
-    response.set_cookie('refresh_token', new_refresh)
+    response.set_cookie(
+        'refresh_token',
+        new_refresh,
+        httponly=True,
+        secure=True,
+        samesite='lax',
+        max_age=REFRESH_TOKEN_EXPIRE_MINUTES * 60
+    )
 
     return {
         "access_token": new_access,

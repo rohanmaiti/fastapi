@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+
 export const axios_instance = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: API_BASE_URL,
   withCredentials: true,
 });
 
@@ -33,7 +35,7 @@ axios_instance.interceptors.response.use(
     const original_request = error.config;
     
     // Skip retry for refresh endpoint to prevent infinite loop
-    if (original_request.url?.includes("/auth/refresh")) {
+    if (original_request.url && original_request.url.includes("/auth/refresh")) {
       isRefreshing = false;
       processQueue(error, null);
       localStorage.clear();

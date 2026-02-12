@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
-from app.core.config import DATABASE_URL
+from app.core.config import DATABASE_URL, ENVIRONMENT
 
 engine=create_async_engine(
     DATABASE_URL,
-    echo=False
+    echo=(ENVIRONMENT == "development")
 )
 
 async_session = sessionmaker(

@@ -17,15 +17,7 @@ def get_token(request: Request, token = Depends(oauth2_scheme), session = Depend
     if token:
         return token
 
-    cookie_token = request.cookies.get('access_token')
-    if cookie_token:
-        return cookie_token
-
     raise HTTPException(status_code=401, detail="Unauthorized")
-
-
-def get_refresh_token(request: Request):
-    return request.cookies.get('refresh_token')
 
 
 could_not_validate_exception = HTTPException(
@@ -41,11 +33,11 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        user_id: str = str(payload.get("sub") or payload["sub"])
-        if (user_id) is None:
+        user_id = payload.get("sub")
+        if not user_id:
             raise could_not_validate_exception
         
-        stmt = select(Users).where(Users.id == (user_id))
+        stmt = select(Users).where(Users.id == str(user_id))
         result = await session.execute(stmt)
         user = result.scalar_one_or_none()
 
@@ -54,11 +46,11 @@ async def get_current_user(
         
         return {
             "data": {
-            "name": user['first_name'],
-            "email": user["email"]
+                "name": user.first_name,
+                "email": user.email
             },
             "status": "200",
-            "message":"login successfull"
+            "message": "Login successful"
         }
     
     except JWTError: 

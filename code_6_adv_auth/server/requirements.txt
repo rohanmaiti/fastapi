@@ -3,6 +3,7 @@ annotated-types==0.7.0
 anyio==4.12.1
 astroid==4.0.4
 asyncpg==0.31.0
+bcrypt==5.0.0
 click==8.3.1
 dill==0.4.1
 dnspython==2.8.0
@@ -14,6 +15,7 @@ h11==0.16.0
 idna==3.11
 isort==7.0.0
 mccabe==0.7.0
+passlib==1.7.4
 platformdirs==4.5.1
 psycopg2-binary==2.9.11
 pyasn1==0.6.2
